@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+
+<head>
+<title>Indie Dev Tools</title>
+</head>
+
+<body style="margin: 0px">
+
+<script>
+	function createCanvas(width = 400, height = 400) {
+
+		let canvas = document.createElement('canvas'),
+			context = canvas.getContext('2d');
+
+		canvas.context = context;
+
+		canvas.width = width;
+		canvas.height = height;
+
+		return canvas;
+	}
+
+	let canvas = createCanvas(window.innerWidth,window.innerHeight),
+		context = canvas.context;
+
+	document.body.appendChild(canvas);
+
+	context.strokeStyle = "blue";
+	context.fillStyle = "lightblue";
+	context.lineWidth = 6;
+
+	context.beginPath();
+	context.moveTo(100,50);
+	context.lineTo(300,600);
+
+	context.stroke();
+
+	//  QUADRATIC CURVE
+	context.beginPath();
+	context.moveTo(500,50);
+	context.quadraticCurveTo(700,300,900,50);
+
+	context.fill();
+	context.stroke();
+
+	//  BEZIER CURVE
+	context.beginPath();
+	context.moveTo(500,450);
+	context.bezierCurveTo(600,350,800,550,900,450);
+	context.lineTo(900,600);
+	context.lineTo(500,600);
+	context.closePath();
+
+	context.fill();
+	context.stroke();
+
+
+
+
+
+
+
+	//  
+	function drawPoint(x,y,colour) {
+		context.save();
+		context.beginPath();
+		context.arc(x,y,5,0,Math.PI*2,false);
+		context.fillStyle = colour || "red";
+		context.fill();
+		context.restore();
+	}
+
+	drawPoint(100,50);
+	drawPoint(300,600);
+
+	context.strokeStyle = "green";
+	context.lineWidth = 4;
+	context.setLineDash([10,10])
+
+	context.beginPath();
+	context.moveTo(500,50);
+	context.lineTo(700,300);
+	context.lineTo(900,50);
+	context.stroke();
+	drawPoint(500,50);
+	drawPoint(700,300);
+	drawPoint(900,50);
+
+	context.beginPath();
+	context.moveTo(500,450);
+	context.lineTo(600,350);
+	context.moveTo(800,550);
+	context.lineTo(900,450);
+	context.stroke();
+	drawPoint(500,450);
+	drawPoint(600,350);
+	drawPoint(800,550);
+	drawPoint(900,450);
+	drawPoint(900,600);
+	drawPoint(500,600);
+
+	</script>
+
+</body>
+</html> 
