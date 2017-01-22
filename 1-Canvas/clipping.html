@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+
+<head>
+<title>Indie Dev Tools</title>
+</head>
+
+<body style="margin: 0px">
+
+<script>
+	function createCanvas(width = 400, height = 400) {
+
+		let canvas = document.createElement('canvas'),
+			context = canvas.getContext('2d');
+
+		canvas.context = context;
+
+		canvas.width = width;
+		canvas.height = height;
+
+		return canvas;
+	}
+
+	let canvas = createCanvas(window.innerWidth,window.innerHeight),
+		context = canvas.context;
+
+	document.body.appendChild(canvas);
+
+	//  AN OBJECT TO HOLD ALL OUR ASSETS
+	let Assets = {
+			images: {}
+		},
+	//  TO KEEP TRACK OF LOADING PROGRESS
+		assetsLoaded = 0,
+		assetsToLoad = 0;
+		
+	//  LOAD AN IMAGE
+	function loadImage(path) {
+		assetsToLoad++;
+		let img = new Image(),
+			split = path.split('/'),
+			file = split[split.length-1],
+			name = file.split('.')[0];
+		img.src = path;
+		Assets.images[name] = img;
+		img.onload = loadHandler;	
+	}
+	//  LOAD MULTIPLE IMAGES
+	function loadImages(paths) {
+		paths.forEach(path => loadImage(path));
+	}
+	//  KEEPS TRACK OF LOADING PROGRESS
+	function loadHandler(asset) {
+		assetsLoaded++;
+		if(assetsLoaded === assetsToLoad)
+			loadComplete();
+	}
+	//  CALLED WHEN ALL ASSETS LOADED
+	function loadComplete() {
+		
+		let img = Assets.images.VitruvianMan,
+			scale = 3,
+			W = img.width/scale,
+			H = img.height/scale,
+			X = 0,
+			rotation = 0,
+
+			drawMan = function(x) {
+				context.save();
+				context.translate(x,350);
+				context.rotate(rotation);
+
+				//  CREATE CIRCULAR PATH
+				context.beginPath();
+				context.arc(W*0.5-W/2,H*0.421-H*0.421,W*0.43,0,Math.PI*2);
+				context.lineWidth = 4;
+				context.stroke();
+
+				//  CLIP ANYTHING THAT FOLLOWS
+				context.clip();
+
+				//  DRAW IMAGE INSIDE PATH
+				context.drawImage(img,-W/2,-H*0.421,W,H*1.018);
+				context.restore();
+			},
+
+			interval = setInterval(() => {
+				context.clearRect(0,0,canvas.width,canvas.height);
+				drawMan(X);
+				X += 1;
+				rotation += 0.0031;
+				if(X > canvas.width - W*0.86)
+					drawMan(X-canvas.width);
+				if(X > canvas.width + W*0.43)
+					X = W*0.43;
+			}, 30);
+
+		}
+	}
+
+	loadImages(["images/VitruvianMan.jpg","images/spriteSheet.png","../idtLogo.gif"]);
+
+
+
+	</script>
+
+</body>
+</html> 

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+
+<head>
+<title>Indie Dev Tools</title>
+</head>
+
+<body style="margin: 0px">
+
+<script>
+	function createCanvas(width = 400, height = 400) {
+
+		let canvas = document.createElement('canvas'),
+			context = canvas.getContext('2d');
+
+		canvas.context = context;
+
+		canvas.width = width;
+		canvas.height = height;
+
+		return canvas;
+	}
+
+	let canvas = createCanvas(window.innerWidth,window.innerHeight),
+		context = canvas.context;
+
+	document.body.appendChild(canvas);
+
+	//  AN OBJECT TO HOLD ALL OUR ASSETS
+	let Assets = {
+			images: {}
+		},
+	//  TO KEEP TRACK OF LOADING PROGRESS
+		assetsLoaded = 0,
+		assetsToLoad = 0;
+		
+	//  LOAD AN IMAGE
+	function loadImage(path) {
+		assetsToLoad++;
+		let img = new Image(),
+			split = path.split('/'),
+			file = split[split.length-1],
+			name = file.split('.')[0];
+		img.src = path;
+		Assets.images[name] = img;
+		img.onload = loadHandler;	
+	}
+	//  LOAD MULTIPLE IMAGES
+	function loadImages(paths) {
+		paths.forEach(path => loadImage(path));
+	}
+	//  KEEPS TRACK OF LOADING PROGRESS
+	function loadHandler(asset) {
+		assetsLoaded++;
+		if(assetsLoaded === assetsToLoad)
+			loadComplete();
+	}
+	//  CALLED WHEN ALL ASSETS LOADED
+	function loadComplete() {
+		let img = Assets.images.VitruvianMan;
+		
+		context.drawImage(img,0,0);
+		context.drawImage(img,0,0,img.width/4,img.height/4);
+		context.drawImage(img,img.width*0.14, img.height*0.21,
+							  img.width*0.72, img.height*0.522,
+							  700, 100,
+							  img.width/6, img.width/6);
+
+		//  CREATE A SECOND CANVAS
+		let canvas2 = createCanvas(canvas.width,canvas.height),
+			context2 = canvas2.context,
+			ss = Assets.images.spriteSheet;
+
+		//  POSITION CANVAS
+		canvas2.style.position = "fixed";
+		canvas2.style.top = 0;
+		document.body.appendChild(canvas2);
+
+		//  KEEP YOUR PIXEL ART CRISP
+		context.imageSmoothingEnabled = false;
+		context2.imageSmoothingEnabled = false;
+
+		//  SET UP CONTEXT
+		context2.lineWidth = 4;
+		context2.strokeStyle = "green";
+		
+		let scale = 5,
+			count = 0,
+			xOffset = 0,
+			interval = setInterval(()=>{
+				context2.clearRect(0,0,canvas2.width,canvas2.height);
+				//  DRAW THE SPRITE
+				context2.drawImage(ss, count*32, 32, 32, 32, xOffset,
+											96*scale, 32*scale, 32*scale);
+				context2.strokeRect(count*32*scale, 32*scale,
+											32*scale, 32*scale);
+				count = (count + 1) % 6;
+				xOffset += 10;
+				if(xOffset > canvas2.width)
+					xOffset = -32*scale;
+			},160);
+
+		context.drawImage(ss,0,0,ss.width,ss.height,0,0,ss.width*scale,ss.height*scale);
+	}
+
+	loadImages(["images/VitruvianMan.jpg","images/spriteSheet.png"]);
+
+	</script>
+
+</body>
+</html> 

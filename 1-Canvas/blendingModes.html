@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+
+<head>
+<title>Indie Dev Tools</title>
+</head>
+
+<body style="margin: 0px">
+
+<script>
+	function createCanvas(width = 400, height = 400) {
+
+		let canvas = document.createElement('canvas'),
+			context = canvas.getContext('2d');
+
+		canvas.context = context;
+
+		canvas.width = width;
+		canvas.height = height;
+
+		return canvas;
+	}
+
+	let canvas = createCanvas(window.innerWidth,window.innerHeight),
+		context = canvas.context;
+
+	document.body.appendChild(canvas);
+
+	//  AN OBJECT TO HOLD ALL OUR ASSETS
+	let Assets = {
+			images: {}
+		},
+	//  TO KEEP TRACK OF LOADING PROGRESS
+		assetsLoaded = 0,
+		assetsToLoad = 0;
+		
+	//  LOAD AN IMAGE
+	function loadImage(path) {
+		assetsToLoad++;
+		let img = new Image(),
+			split = path.split('/'),
+			file = split[split.length-1],
+			name = file.split('.')[0];
+		img.src = path;
+		Assets.images[name] = img;
+		img.onload = loadHandler;	
+	}
+	//  LOAD MULTIPLE IMAGES
+	function loadImages(paths) {
+		paths.forEach(path => loadImage(path));
+	}
+	//  KEEPS TRACK OF LOADING PROGRESS
+	function loadHandler(asset) {
+		assetsLoaded++;
+		if(assetsLoaded === assetsToLoad)
+			loadComplete();
+	}
+	//  CALLED WHEN ALL ASSETS LOADED
+	function loadComplete() {
+		let img = Assets.images.VitruvianMan;
+
+		context.save();
+		context.scale(0.3,0.3);
+		context.drawImage(img,img.width*0.14, img.height*0.21,
+							  img.width*0.72, img.height*0.522,
+							  0,0,
+							  img.width, img.width);
+		context.restore();
+
+		let blendingModes = [ 'multiply','screen','overlay','darken','lighten','color-dodge',
+								'color-burn','hard-light','soft-light','difference','exclusion',
+								'luminosity','hue','saturation','color' ];
+
+		let	gradient1 = context.createLinearGradient(0,0,700,0);
+		gradient1.addColorStop(0,"rgb(0,0,0)");
+		gradient1.addColorStop(1,"rgb(255,255,255)");
+
+		let	gradient2 = context.createLinearGradient(0,0,700,0);
+		gradient2.addColorStop(0,"rgb(255,0,0)");
+		gradient2.addColorStop(1,"rgb(255,255,255)");
+
+		context.textBaseline = "top";
+		context.font = "20px sans-serif";
+
+		blendingModes.forEach( (mode, index) => {
+			if(mode === "hue" || mode == "saturation" || mode == "color")
+				context.fillStyle = gradient2;
+			else 
+				context.fillStyle = gradient1;
+
+			context.globalCompositeOperation = mode;
+			context.fillRect(0,index * 45, 700, 45);
+
+			context.fillStyle = "black";
+			context.fillText(mode, 700, index * 45 + 10 );
+		})
+
+	}
+
+	loadImages(["images/VitruvianMan.jpg","images/spriteSheet.png","../idtLogo.gif"]);
+
+
+
+	</script>
+
+</body>
+</html> 

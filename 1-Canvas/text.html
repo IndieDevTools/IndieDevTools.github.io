@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+
+<head>
+<title>Indie Dev Tools</title>
+</head>
+
+<body style="margin: 0px">
+
+<script>
+	function createCanvas(width = 400, height = 400) {
+
+		let canvas = document.createElement('canvas'),
+			context = canvas.getContext('2d');
+
+		canvas.context = context;
+
+		canvas.width = width;
+		canvas.height = height;
+
+		return canvas;
+	}
+
+	let canvas = createCanvas(window.innerWidth,window.innerHeight),
+		context = canvas.context;
+
+	document.body.appendChild(canvas);
+
+	
+	//  BACKGROUND
+	context.fillStyle = "lightblue";
+	context.strokeStyle = "red";
+
+	context.fillRect(25,50,950,200);
+	context.fillRect(25,275,950,40);
+	context.fillRect(25,325,950,40);
+
+	context.beginPath();
+	context.moveTo(25,150);
+	context.lineTo(975,150);
+	context.stroke();
+
+	context.font = "30px sans-serif";
+	context.textBaseline = "middle";
+	context.strokeText("<- Baseline",975,148);
+
+	//  BASE LINE EXAMPLES
+	function baselineText(baseline,x,y) {
+		//  SET BASELINE
+		context.textBaseline = baseline;
+		context.fillText(baseline,x,y);
+	}
+
+	context.fillStyle = "black";
+	baselineText("bottom",50,150);
+	baselineText("middle",200,150);
+	baselineText("top",350,150);
+	baselineText("hanging",450,150);
+	baselineText("ideographic",600,150);
+	baselineText("alphabetic",800,150);
+
+	//  ALIGNMENT EXAMPLES
+	function alignmentText(alignment,x,y) {
+		context.fillStyle = "red";
+		context.beginPath();
+		context.arc(x,y,4,0,Math.PI*2,false);
+		context.fill();
+		// SET THE ALIGNMENT
+		context.textAlign = alignment;
+		context.fillStyle = "black";
+		context.fillText(" \'"+ alignment +"\' aligned text",x,y)
+	}
+
+	context.textBaseline = "top";
+	alignmentText("start",25,275);
+	alignmentText("end",975,275);
+	alignmentText("left",25,325);
+	alignmentText("center",475,325);
+	alignmentText("right",975,325);
+
+
+
+	</script>
+
+</body>
+</html> 

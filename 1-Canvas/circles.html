@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+
+<head>
+<title>Indie Dev Tools</title>
+</head>
+
+<body style="margin: 0px">
+
+<script>
+	function createCanvas(width = 400, height = 400) {
+
+		let canvas = document.createElement('canvas'),
+			context = canvas.getContext('2d');
+
+		canvas.context = context;
+
+		canvas.width = width;
+		canvas.height = height;
+
+		return canvas;
+	}
+
+	let canvas = createCanvas(window.innerWidth,window.innerHeight),
+		context = canvas.context;
+
+	document.body.appendChild(canvas);
+
+	let pi = Math.PI;
+
+	//  SET UP CONTEXT
+	context.strokeStyle = "darkgreen";
+	context.fillStyle = "lightgreen";
+	context.lineWidth = 4;
+
+	//  FULL CIRCLE
+	context.beginPath();
+	context.arc(300,300,200,0,pi*2,false);
+	context.fill();
+	context.stroke();
+
+	//  HALF CIRCLE CLOCKWISE
+	context.beginPath();
+	context.arc(700,150,100,pi*0.5,pi*1.5,false);
+	context.fill();
+	context.stroke();
+
+	//  HALF CIRCLE COUNTER CLOCKWISE
+	context.beginPath();
+	context.arc(900,150,100,pi*0.5,pi*1.5,true);
+	context.fill();
+	context.stroke();
+
+	//  PARTIAL CIRCLE ON LEFT
+	context.beginPath();
+	context.arc(700,450,100,pi*0.8,pi*1.5,false);
+	context.fill();
+	context.stroke();
+
+	//  PARTIAL CIRCLE ON RIGHT
+	context.beginPath();
+	context.arc(900,450,100,pi*0.4,pi*0.1,false);
+	context.fill();
+	context.stroke();
+
+
+
+
+
+	function drawPoint(x,y,colour) {
+		context.save();
+		context.beginPath();
+		context.arc(x,y,5,0,Math.PI*2,false);
+		context.fillStyle = colour || "red";
+		context.fill();
+		context.restore();
+	}
+
+	function drawTicks(x,y,r,l,ticks) {
+		context.save();
+		ticks.forEach( tick => {
+			context.save();
+			context.translate(x,y);
+			context.rotate(tick*Math.PI);
+			context.beginPath();
+			context.moveTo(r-l/2,0);
+			context.lineTo(r+l/2,0);
+			context.lineWidth = 4;
+			context.strokeStyle = "red";
+			context.stroke();
+			context.restore();
+		})
+		context.restore();
+	}
+
+	function drawRadius(x,y,r) {
+		context.beginPath();
+		context.moveTo(x,y);
+		context.lineTo(x+r,y);
+		context.strokeStyle = "red";
+		context.save();
+		context.setLineDash([10,10]);
+		context.stroke();
+		context.restore();
+	}
+
+	drawTicks(300,300,200,12,[0,0.25,0.5,0.75,1,1.25,1.5,1.75]);
+	drawTicks(700,150,100,12,[0.5,1.5]);
+	drawTicks(900,150,100,12,[0.5,1.5]);
+	drawTicks(700,450,100,12,[0.8,1.5]);
+	drawTicks(900,450,100,12,[0.1,0.4]);
+
+	drawRadius(300,300,200);
+	drawRadius(600,150,100);
+	drawRadius(900,150,100);
+	drawRadius(600,450,100);
+	drawRadius(900,450,100);
+
+	drawPoint(300,300);
+	drawPoint(700,150);
+	drawPoint(900,150);
+	drawPoint(700,450);
+	drawPoint(900,450);
+
+	//  DRAW CW
+	context.beginPath();
+	context.arc(700,150,125,pi*0.7,pi,false);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(565,155);
+	context.lineTo(575,150);
+	context.lineTo(585,155);
+	context.stroke();
+
+	//  DRAW CCW
+	context.beginPath();
+	context.arc(900,150,125,0,pi*0.3,false);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(1015,155);
+	context.lineTo(1025,150);
+	context.lineTo(1035,155);
+	context.stroke();
+
+
+
+	</script>
+
+</body>
+</html> 

@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+
+<head>
+<title>Indie Dev Tools</title>
+</head>
+
+<body style="margin: 0px">
+
+<script>
+	function createCanvas(width = 400, height = 400) {
+
+		let canvas = document.createElement('canvas'),
+			context = canvas.getContext('2d');
+
+		canvas.context = context;
+
+		canvas.width = width;
+		canvas.height = height;
+
+		return canvas;
+	}
+
+	let canvas = createCanvas(window.innerWidth,window.innerHeight),
+		context = canvas.context;
+
+	document.body.appendChild(canvas);
+
+	//  LINEAR GRADIENT
+	let lGrad = context.createLinearGradient(80,90,300,500);
+	lGrad.addColorStop(0,'orange');
+	lGrad.addColorStop(0.25,'yellow');
+	lGrad.addColorStop(0.5,'green')
+	lGrad.addColorStop(0.75,'blue');
+	lGrad.addColorStop(1,'purple');
+	context.fillStyle = lGrad;
+
+	context.beginPath();
+	context.rect(50,50,400,600);
+	context.fill();
+
+	//  RADIAL GRADIENT
+	let rGrad = context.createRadialGradient(800,350,300,650,200,50);
+	rGrad.addColorStop(0,'purple');
+	rGrad.addColorStop(0.25,'blue');
+	rGrad.addColorStop(0.5,'green');
+	rGrad.addColorStop(0.75,'yellow');
+	rGrad.addColorStop(1,'orange');
+	context.fillStyle = rGrad;
+
+	context.beginPath();
+	context.arc(800,350,300,0,Math.PI*2,false);
+	context.fill();
+
+
+
+
+
+
+	function drawPoint(x,y,colour) {
+		context.save();
+		context.beginPath();
+		context.arc(x,y,5,0,Math.PI*2,false);
+		context.fillStyle = colour || "red";
+		context.fill();
+		context.restore();
+	}
+
+
+	context.setLineDash([10,10]);
+	context.lineWidth = 4;
+	context.strokeStyle = "red";
+
+	// drawPoint(80,90);
+	// drawPoint(300,500);
+	context.beginPath();
+	context.moveTo(80,90);
+	context.lineTo(300,500);
+	context.stroke();
+
+
+	context.beginPath();
+	context.arc(800,350,300,0,Math.PI*2);
+	context.stroke();
+	// drawPoint(800,350);
+	// drawRadius(800,350,300);
+
+	context.beginPath();
+	context.arc(650,200,50,0,Math.PI*2);
+	context.stroke();
+	// drawPoint(650,200);
+	// drawRadius(650,200,50);
+
+	context.beginPath();
+	context.moveTo(700,200);
+	context.lineTo(1100,350);
+	context.stroke();
+
+	drawPoint(80,90,"black");
+	drawPoint(134,192,"black");
+	drawPoint(188,294,"black");
+	drawPoint(242,396,"black");
+	drawPoint(300,500,"black");
+
+	drawPoint(700,200,"black");
+	drawPoint(800,237,"black");
+	drawPoint(900,275,"black");
+	drawPoint(1000,312,"black");
+	drawPoint(1100,350,"black");
+
+	</script>
+
+</body>
+</html> 
