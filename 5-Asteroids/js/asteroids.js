@@ -246,6 +246,9 @@ let tVec = new Vec(),
 			ctx.fillText(title,
 				innerWidth/2 - ctx.measureText(title).width/2,
 				200);
+			ctx.font = '20px futura';
+			ctx.fillText('press any key to start',innerWidth/2 - ctx.measureText(title).width/2,
+				220)
 		}
 	},
 	fireBullet = () => {
