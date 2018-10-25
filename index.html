@@ -1,11 +1,65 @@
 <!DOCTYPE HTML>
 
 <head>
-<title>Indie Dev Tools</title>
+	<title>Indie Dev Tools</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="shortcut icon" type="image/ico" href="media/idtLogo.ico">
+	<link href="https://fonts.googleapis.com/css?family=Orbitron:400,700" rel="stylesheet">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
 </head>
 
-<body style="margin: 0px">
+<body>
 
+	<!--   HEADER   -->
+	<header>
+		<h2><img src="media/idtTitle.png" alt="idt title image"></h2>
+		<nav>
+			<ul>
+				<li><a href="#videos">Videos</a></li>
+				<!-- <li><a href="#playlists">Play Lists</a></li> -->
+				<li><a href="#prototypes">Prototypes</a></li>
+				<li><a href="#examples">Examples</a></li>
+			</ul>
+		</nav>
+	</header>
+	<hr id='spacer'>
+	<hr>
+
+	<!--    MAIN BODY  -->
+	<div class='sections'>
+
+		<div class='section' id='videos'>
+			<h2>Videos</h2>
+			<ul>
+				<li><a href="https://www.youtube.com/watch?v=-OuJGOn9Uhc"><img src="media/covers/canvas.png"></a></li>
+				<li><a href="https://www.youtube.com/watch?v=EP8r_Ss6aac"><img src="media/covers/pong.png"></a></li>
+				<li><a href="https://www.youtube.com/watch?v=ARyD91h4rUQ"><img src="media/covers/vectors.png"></a></li>
+				<li><a href="https://www.youtube.com/watch?v=jxgAxzr1xl0"><img src="media/covers/gameObjects.png"></a></li>
+				<li><a href="https://www.youtube.com/watch?v=bg2cf4GblTQ"><img src="media/covers/shapesAndText.png"></a></li>
+				
+			</ul>
+		</div>
+		<hr>
+		<!-- <div class='section' id='playlists'>
+			<h2>Play Lists</h2>
+		</div>
+		<hr> -->
+		<div class='section' id='prototypes'>
+			<h2>Prototypes</h2>
+			<ul>
+				<li><a href="https://indiedevtools.github.io/2-Pong/index.html" target="_blank"><img src="media/covers/pong.png"></a></li>
+				<li><a href=""><img src="media/covers/asteroids.png"></a></li>
+			</ul>
+		</div>
+		<hr>
+		<div class='section' id='examples'>
+			<h2>Examples</h2>
+		</div>
+		<hr>
+	</div> 
+
+	<!-- 
 <h1>Game Objects</h1>
 <a href="https://indiedevtools.github.io/4-GameObjects/index.html"><h3>Parenting Game Object</h3></a>
 
@@ -27,8 +81,63 @@
 <a href="https://indiedevtools.github.io/1-Canvas/compositeOperations.html"><h3>CompositeOperations</h3></a>
 <a href="https://indiedevtools.github.io/1-Canvas/alpha.html"><h3>Alpha</h3></a>
 <a href="https://indiedevtools.github.io/1-Canvas/clipping.html"><h3>Clipping</h3></a>
+ -->
 
+	<!--    FOOTER  -->
+	<footer>
+		<ul>
+			<li><a href="https://twitter.com/IndieDevTools"><i class="fab fa-twitter"></i></a></li>
+			<li><a href="https://www.youtube.com/channel/UC_oMyOinjzc7RnhI4HGC8lA"><i class="fab fa-youtube"></i></a></li>
+			<li><a href="https://www.patreon.com/indieDevTools"><i class="fab fa-patreon"></i></a></li>
+		</ul>
+		<p>&copy; <script>document.write(new Date().getFullYear());</script> KeithK </p>
+	</footer>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('a[href^="#"]').on('click', function(e) {
+				e.preventDefault();
 
+				var target = this.hash;
+				var $target = $(target);
+
+				$('html, body').stop().animate({
+					'scrollTop': $target.offset().top -150
+				}, 700, 'swing', function() {
+					window.location.hash = target -150;
+				});
+			});
+		});
+	</script>
 
 </body>
 </html> 
+
+
+
+
+
+
+
+<!-- 
+<h1>Game Objects</h1>
+<a href="https://indiedevtools.github.io/4-GameObjects/index.html"><h3>Parenting Game Object</h3></a>
+
+<h1>Vectors</h1>
+<a href="https://indiedevtools.github.io/3-Vectors/dotProduct.html"><h3>Dot Product Example</h3></a>
+<a href="https://indiedevtools.github.io/3-Vectors/lineCrossing.html"><h3>Line Crossing Example</h3></a>
+
+<h1>Pong</h1>
+<a href="https://indiedevtools.github.io/2-Pong/index.html">Play</a>
+
+<h1>Canvas</h1>
+<a href="https://indiedevtools.github.io/1-Canvas/lines.html"><h3>Lines</h3></a>
+<a href="https://indiedevtools.github.io/1-Canvas/circles.html"><h3>Circles</h3></a>
+<a href="https://indiedevtools.github.io/1-Canvas/rectangles.html"><h3>Rectangles</h3></a>
+<a href="https://indiedevtools.github.io/1-Canvas/gradients.html"><h3>Gradients</h3></a>
+<a href="https://indiedevtools.github.io/1-Canvas/text.html"><h3>Text</h3></a>
+<a href="https://indiedevtools.github.io/1-Canvas/images.html"><h3>Images</h3></a>
+<a href="https://indiedevtools.github.io/1-Canvas/blendingModes.html"><h3>BlendingModes</h3></a>
+<a href="https://indiedevtools.github.io/1-Canvas/compositeOperations.html"><h3>CompositeOperations</h3></a>
+<a href="https://indiedevtools.github.io/1-Canvas/alpha.html"><h3>Alpha</h3></a>
+<a href="https://indiedevtools.github.io/1-Canvas/clipping.html"><h3>Clipping</h3></a>
+ -->
