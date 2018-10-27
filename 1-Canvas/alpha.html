@@ -2,11 +2,17 @@
 
 <head>
 <title>Indie Dev Tools</title>
+<script src="../codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="../codemirror/lib/codemirror.css">
+<script src="../codemirror/mode/javascript/javascript.js"></script>
 </head>
+
 
 <body style="margin: 0px">
 
 <script>
+	
+
 	function createCanvas(width = 400, height = 400) {
 
 		let canvas = document.createElement('canvas'),
@@ -69,6 +75,9 @@
 			context.fillStyle = fillStyle;
 			context.fill();
 		}
+		context.fillStyle = 'black';
+		context.font = '24px futura'
+		context.fillText(`An example showing use of globalAlpha to draw transparent shapes and images. Scroll down for code.`,10,innerHeight-50);
 
 		//  SPINNING GUMBOT
 		context.imageSmoothingEnabled = false;
@@ -103,9 +112,114 @@
 
 	loadImages(["images/VitruvianMan.jpg","images/spriteSheet.png"]);
 
+var myCodeMirror = CodeMirror(document.body, {
+		value: `function createCanvas(width = 400, height = 400) {
 
+		let canvas = document.createElement('canvas'),
+			context = canvas.getContext('2d');
+
+		canvas.context = context;
+
+		canvas.width = width;
+		canvas.height = height;
+
+		return canvas;
+	}
+
+	let canvas = createCanvas(window.innerWidth,window.innerHeight),
+		context = canvas.context;
+
+	document.body.appendChild(canvas);
+
+	//  AN OBJECT TO HOLD ALL OUR ASSETS
+	let Assets = {
+			images: {}
+		},
+	//  TO KEEP TRACK OF LOADING PROGRESS
+		assetsLoaded = 0,
+		assetsToLoad = 0;
+		
+	//  LOAD AN IMAGE
+	function loadImage(path) {
+		assetsToLoad++;
+		let img = new Image(),
+			split = path.split('/'),
+			file = split[split.length-1],
+			name = file.split('.')[0];
+		img.src = path;
+		Assets.images[name] = img;
+		img.onload = loadHandler;	
+	}
+	//  LOAD MULTIPLE IMAGES
+	function loadImages(paths) {
+		paths.forEach(path => loadImage(path));
+	}
+	//  KEEPS TRACK OF LOADING PROGRESS
+	function loadHandler(asset) {
+		assetsLoaded++;
+		if(assetsLoaded === assetsToLoad)
+			loadComplete();
+	}
+	//  CALLED WHEN ALL ASSETS LOADED
+	function loadComplete() {
+
+		//  FADING CIRCLES	
+		let alpha = 1;
+		for(let i=0; i < 5; i++) {
+			drawCircle(155 + i*100, 225, 150, "rgba(0,0,255,"+alpha+")");
+			alpha -= 0.2;
+		}
+		function drawCircle(x,y,r,fillStyle) {
+			context.beginPath();
+			context.arc(x,y,r,0,Math.PI*2);
+			context.fillStyle = fillStyle;
+			context.fill();
+		}
+
+		//  SPINNING GUMBOT
+		context.imageSmoothingEnabled = false;
+		context.font = "40px futura";
+		context.fillStyle = "black";
+		
+		let index = 0,
+			count = 1,
+			sequence = [0,1,2,3,4,3,2,1],
+			interval = setInterval(()=>{
+				context.save();
+				context.translate(710,0);
+				context.clearRect(0,0,320,320);
+				//  SET ALPHA FOR TEXT
+				context.globalAlpha = 1;
+				context.fillText("Gum Bot by",50,215);
+				context.fillText("@GrafxKid",50,265);
+				if(index > 4) {
+					context.translate(320,0);
+					context.scale(-1,1);
+				}
+				//  SET ALPHA FOR SPRITE
+				context.globalAlpha = (Math.sin(count) + 1) / 2;
+				context.drawImage(Assets.images.spriteSheet,
+									sequence[index]*32,0,32,32,
+									0,0,320,320);
+				context.restore();
+				index = (index + 1) % 8;
+				count += 0.1;
+			},200);
+	}
+
+	loadImages(["images/VitruvianMan.jpg","images/spriteSheet.png"]);`,
+		mode:  "javascript",
+		lineNumbers: true,
+		readOnly: true
+	});
+	setTimeout(()=>{window.scrollTo(0,0);},100);
 
 	</script>
+<pre>
+	
+
+
+</pre>
 
 </body>
 </html> 
