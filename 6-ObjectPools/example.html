@@ -163,7 +163,8 @@
 		firingSpeed = 100,
 		firingTimer = 100,
 		controlHandler = e => {
-			// e.preventDefault();
+			if(e.type === 'touchstart')
+				e.preventDefault();
 			if(!running) start();
 			if(firingTimer < 0) {
 				fireProjectile();
