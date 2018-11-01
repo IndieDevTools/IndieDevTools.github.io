@@ -2,9 +2,21 @@
 
 <head>
 <title>Indie Dev Tools</title>
+<script src="../codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="../codemirror/lib/codemirror.css">
+<script src="../codemirror/mode/javascript/javascript.js"></script>
+<style>
+	*{ margin: 0 }
+	.CodeMirror {
+		height: 100%;
+		background: rgb(245,245,245);
+		border: 2px solid rgb(200,200,200);
+		border-radius: 10px;
+	}
+</style>
 </head>
 
-<body style="margin: 0px">
+<body>
 
 <script>
 	function createCanvas(width = 400, height = 400) {
@@ -89,9 +101,106 @@
 				Y += 200
 			}
 		});
+
+		context.fillStyle = 'black';
+		context.font = '24px futura'
+		context.fillText(`An example showing broken composite operations. Scroll down for code.`,10,innerHeight-50);
 	}
 
 	loadImages(["images/VitruvianMan.jpg","images/spriteSheet.png"]);
+
+	var myCodeMirror = CodeMirror(document.body, {
+		value:
+`function createCanvas(width = 400, height = 400) {
+
+	let canvas = document.createElement('canvas'),
+		context = canvas.getContext('2d');
+
+	canvas.context = context;
+
+	canvas.width = width;
+	canvas.height = height;
+
+	return canvas;
+}
+
+let canvas = createCanvas(window.innerWidth,window.innerHeight),
+	context = canvas.context;
+
+document.body.appendChild(canvas);
+
+//  AN OBJECT TO HOLD ALL OUR ASSETS
+let Assets = {
+		images: {}
+	},
+//  TO KEEP TRACK OF LOADING PROGRESS
+	assetsLoaded = 0,
+	assetsToLoad = 0;
+	
+//  LOAD AN IMAGE
+function loadImage(path) {
+	assetsToLoad++;
+	let img = new Image(),
+		split = path.split('/'),
+		file = split[split.length-1],
+		name = file.split('.')[0];
+	img.src = path;
+	Assets.images[name] = img;
+	img.onload = loadHandler;	
+}
+//  LOAD MULTIPLE IMAGES
+function loadImages(paths) {
+	paths.forEach(path => loadImage(path));
+}
+//  KEEPS TRACK OF LOADING PROGRESS
+function loadHandler(asset) {
+	assetsLoaded++;
+	if(assetsLoaded === assetsToLoad)
+		loadComplete();
+}
+//  CALLED WHEN ALL ASSETS LOADED
+function loadComplete() {
+
+	let buffer = createCanvas(200,200),
+		contextB = buffer.context,
+		compositeOperations = [ 'source-over','source-in','source-out','source-atop',
+								'destination-over','destination-in','destination-out',
+								'destination-atop','lighter','copy','xor'],
+		X = 0,
+		Y = 0;
+
+	context.textBaseline = "top";
+	context.font = "20px sans-serif";
+
+	compositeOperations.forEach( (op, index) => {
+		//  DRAW EXAMPLE TO BUFFER
+		contextB.globalCompositeOperation = op;
+		//  DESTINATION (BLUE)
+		contextB.fillStyle = "rgb(0,0,255)";
+		contextB.beginPath();
+		contextB.arc(115,115,75,0,Math.PI*2);
+		contextB.fill();
+		//  SOURCE (RED)
+		contextB.fillStyle = "rgb(255,0,0)";
+		contextB.fillRect(10,10,150,150);
+		//  DRAW BUFFER TO SCREEN
+		context.drawImage(buffer,X,Y);
+		context.fillText(op,X+12,Y+12)
+
+		X += 200;
+		if(X > 700) {
+			X = 0,
+			Y += 200
+		}
+	});
+}
+
+loadImages(["images/VitruvianMan.jpg","images/spriteSheet.png"]);`,
+		mode:  "javascript",
+		lineNumbers: true,
+		readOnly: true
+	});
+	setTimeout(()=>{window.scrollTo(0,0);},100);
 
 	</script>
 

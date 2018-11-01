@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Object Pooling Example</title>
+	<script src="../codemirror/lib/codemirror.js"></script>
+	<link rel="stylesheet" href="../codemirror/lib/codemirror.css">
+	<script src="../codemirror/mode/javascript/javascript.js"></script>
+	<style>
+		*{ margin: 0 }
+		.CodeMirror {
+			height: 100%;
+			background: rgb(245,245,245);
+			border: 2px solid rgb(200,200,200);
+			border-radius: 10px;
+		}
+	</style>
+</head>
+<body>
+<script>
+	//  REUSED INSTANCE VARIABLES AND INDEXES
+	let _obj, _i;
+
+	//  OBJECT POOL REUSES OBJECTS TO SAVE ON GARBAGE COLLECTION
+	class ObjectPool {
+		//  objectType = THE TYPE OF OBJECT BEING POOLED.  IT MUST HAVE AN init() FUNCTION
+		constructor(objectType) {
+			//  STORES ALL POOLED OBJECTS CURRENTLY IN USE
+			this.active = [];
+			//  STORES ALL POOLED OBJECTS NOT CURRENTLY IN USE
+			this.inactive = [];
+			//  THE TYPE OF OBJECT BEING POOLED
+			this.objectType = objectType;
+		};
+		//  RETURNS A NEW OBJECT OF THE TYPE BEING POOLED
+		//  options = {} - INITIATION ARGUMENTS FOR NEW OBJECT
+		newObject(options) {
+			//  IF THERE ARE ANY INACTIVE OBJECTS IN THE POOL
+			if(this.inactive.length > 0)
+				//  REMOVE IT FROM THE INACTIVE ARRAY
+				_obj = this.inactive.pop();
+			//  IF THERE ARE NO INACTIVE OBJECTS
+			else {
+				//  CREATE A NEW ONE
+				_obj = new this.objectType(options);
+				//  TELL IT HOW TO DEACTIVATE
+				_obj.release = () => {
+					this.active.splice(this.active.indexOf(_obj),1);
+					this.inactive.push(_obj);
+				};
+			};
+			//  INITIALIZE IT
+			_obj.init(options);
+			//  ACTIVATE IT
+			this.active.push(_obj);
+		};
+	};
+
+	class Projectile {
+		constructor(o) {
+			//  X AND Y LOCATIONS
+			this.x = o.x;
+			this.y = o.y;
+			this.vx = 0;
+			this.vy = 0;
+		};
+		init(o) {
+			//  X AND Y LOCATIONS
+			this.x = o.x;
+			this.y = o.y;
+			//  X AND Y VELOCITIES
+			this.vx = o.vx;
+			this.vy = o.vy;
+			//  RANDOMIZED COLOUR
+			this.fillStyle = 'rgb('+Math.random()*256+','
+									+Math.random()*256+','
+									+Math.random()*256+')';
+		};
+		update(dt) {
+			//  ADD VELOCITY TO POSITION
+			this.x += this.vx * dt;
+			this.y += this.vy * dt;
+			//  SIMULATE GRAVITY
+			this.vy += 10;
+		};
+	};
+
+	//  CONSTANTS
+	const deltaTime = 1000/60;
+
+	//  SETUP
+	let Canvas = () => {
+			_obj = document.createElement('canvas');
+			_obj.context = _obj.getContext('2d');
+			_obj.width = innerWidth;
+			_obj.height = innerHeight;
+			document.body.appendChild(_obj);
+			return _obj;
+		},
+		canvas = Canvas(),
+	//  GAME LOOP
+		running = false,
+		lastTime = 0,
+		elapsedTime = 0,
+		tick = (timeStamp) => {
+			elapsedTime += timeStamp - lastTime;
+			lastTime = timeStamp;
+			while(elapsedTime > deltaTime) {
+				update(deltaTime);
+				elapsedTime -= deltaTime;
+			};
+			render(canvas.context);
+			if(running)
+				requestAnimationFrame(tick);
+		},
+		update = dt => {
+			firingTimer -= dt;
+			for(_i=0; _i<projectilePool.active.length; _i++) {
+				_obj = projectilePool.active[_i];
+				_obj.update(dt/1000);
+				if(_obj.y > innerHeight)
+					_obj.release();
+			}
+		},
+		render = (ctx) => {
+			ctx.fillStyle = 'white';
+			ctx.fillRect(0,0,innerWidth,innerHeight);
+			for(_i=0; _i<projectilePool.active.length; _i++) {
+				_obj = projectilePool.active[_i];
+				ctx.save();
+				ctx.translate(_obj.x,_obj.y);
+				ctx.beginPath();
+				ctx.arc(0,0,32,0,Math.PI*2,false);
+				ctx.fillStyle = _obj.fillStyle;
+				ctx.fill();
+				ctx.restore();
+			}
+			ctx.fillStyle = 'black';
+			ctx.font = '40px futura';
+			ctx.fillText('Active: ' + projectilePool.active.length,10,60);
+			ctx.fillText('Inactve: ' + projectilePool.inactive.length,10,100);
+			
+			ctx.fillStyle = 'black';
+			ctx.font = '24px futura'
+			ctx.fillText('Object Pool example.  Click to operate.  Scroll down for code.',10,innerHeight-50);
+		},
+		start = () => {
+			running = true;
+			tick(deltaTime);
+		},
+
+	//  EXAMPLE
+		projectilePool = new ObjectPool(Projectile);
+		fireProjectile = () => {
+			_obj = projectilePool.newObject({
+				x: innerWidth/2,
+				y: innerHeight - innerHeight/4,
+				vx: (Math.random()-0.5) * 300,
+				vy: -500 - Math.random() * 100
+			});
+		},
+
+	//  CONTROLS
+		firingSpeed = 100,
+		firingTimer = 100,
+		controlHandler = e => {
+			// e.preventDefault();
+			if(!running) start();
+			if(firingTimer < 0) {
+				fireProjectile();
+				firingTimer = firingSpeed;
+			}
+		};
+	addEventListener('touchstart',controlHandler,{passive:false});
+	addEventListener('mousedown',controlHandler,{passive:false});
+
+
+
+	var myCodeMirror = CodeMirror(document.body, {
+		value: 
+`let _obj, _i;
+
+class ObjectPool {
+	constructor(objectType) {
+		this.active = [];
+		this.inactive = [];
+		this.objectType = objectType;
+	};
+	newObject(options) {
+		if(this.inactive.length > 0)
+			_obj = this.inactive.pop();
+		else {
+			_obj = new this.objectType(options);
+			_obj.release = () => {
+				this.active.splice(this.active.indexOf(_obj),1);
+				this.inactive.push(_obj);
+			};
+		};
+		_obj.init(options);
+		this.active.push(_obj);
+	};
+};
+
+class Projectile {
+	constructor(o) {
+		this.x = o.x;
+		this.y = o.y;
+		this.vx = 0;
+		this.vy = 0;
+	};
+	init(o) {
+		this.x = o.x;
+		this.y = o.y;
+		this.vx = o.vx;
+		this.vy = o.vy;
+		this.fillStyle = 'rgb('+Math.random()*256+','
+								+Math.random()*256+','
+								+Math.random()*256+')';
+	};
+	update(dt) {
+		this.x += this.vx * dt;
+		this.y += this.vy * dt;
+		this.vy += 10;
+	};
+};
+const deltaTime = 1000/60;
+let Canvas = () => {
+		_obj = document.createElement('canvas');
+		_obj.context = _obj.getContext('2d');
+		_obj.width = innerWidth;
+		_obj.height = innerHeight;
+		document.body.appendChild(_obj);
+		return _obj;
+	},
+	running = false,
+	lastTime = 0,
+	elapsedTime = 0,
+	tick = (timeStamp) => {
+		elapsedTime += timeStamp - lastTime;
+		lastTime = timeStamp;
+		while(elapsedTime > deltaTime) {
+			update(deltaTime);
+			elapsedTime -= deltaTime;
+		};
+		render(canvas.context);
+		if(running)
+			requestAnimationFrame(tick);
+	},
+	update = dt => {
+		firingTimer -= dt;
+		for(_i=0; _i<projectilePool.active.length; _i++) {
+			_obj = projectilePool.active[_i];
+			_obj.update(dt/1000);
+			if(_obj.y > innerHeight)
+				_obj.release();
+		}
+	},
+	render = (ctx) => {
+		ctx.fillStyle = 'white';
+		ctx.fillRect(0,0,innerWidth,innerHeight);
+		for(_i=0; _i<projectilePool.active.length; _i++) {
+			_obj = projectilePool.active[_i];
+			ctx.save();
+			ctx.translate(_obj.x,_obj.y);
+			ctx.beginPath();
+			ctx.arc(0,0,32,0,Math.PI*2,false);
+			ctx.fillStyle = _obj.fillStyle;
+			ctx.fill();
+			ctx.restore();
+		}
+		ctx.fillStyle = 'black';
+		ctx.font = '40px futura';
+		ctx.fillText('Active: ' + projectilePool.active.length,10,60);
+		ctx.fillText('Inactve: ' + projectilePool.inactive.length,10,100);
+	},
+	start = () => {
+		running = true;
+		tick(deltaTime);
+	},
+	projectilePool = new ObjectPool(Projectile);
+	fireProjectile = () => {
+		_obj = projectilePool.newObject({
+			x: innerWidth/2,
+			y: innerHeight - innerHeight/4,
+			vx: (Math.random()-0.5) * 300,
+			vy: -500 - Math.random() * 100
+		});
+	},
+	firingSpeed = 100,
+	firingTimer = 100,
+	controlHandler = e => {
+		if(!running) start();
+		if(firingTimer < 0) {
+			fireProjectile();
+			firingTimer = firingSpeed;
+		}
+	};
+addEventListener('touchstart',controlHandler,{passive:false});
+addEventListener('mousedown',controlHandler,{passive:false});
+`,
+		mode:  "javascript",
+		lineNumbers: true,
+		readOnly: true
+	});
+	setTimeout(()=>{window.scrollTo(0,0);},100);
+	canvas.context.fillStyle = 'black';
+	canvas.context.font = '24px futura'
+	canvas.context.fillText('Object Pool example.  Click to start.  Scroll down for code.',10,innerHeight-50);
+</script>
+</body>
+</html>

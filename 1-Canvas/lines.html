@@ -5,9 +5,18 @@
 <script src="../codemirror/lib/codemirror.js"></script>
 <link rel="stylesheet" href="../codemirror/lib/codemirror.css">
 <script src="../codemirror/mode/javascript/javascript.js"></script>
+<style>
+	*{ margin: 0 }
+	.CodeMirror {
+		height: 100%;
+		background: rgb(245,245,245);
+		border: 2px solid rgb(200,200,200);
+		border-radius: 10px;
+	}
+</style>
 </head>
 
-<body style="margin: 0px">
+<body>
 
 <script>
 	function createCanvas(width = 400, height = 400) {
@@ -190,24 +199,7 @@
 	});
 	setTimeout(()=>{window.scrollTo(0,0);},100);
 
-
-
-
-// context.fillStyle = 'black';
-// 	context.font = '24px futura'
-// 	context.fillText(`An example showing how to draw lines on the canvas. Scroll down for code.`,10,innerHeight-50);
-// 	var myCodeMirror = CodeMirror(document.body, {
-// 		value:,
-// 		mode:  "javascript",
-// 		lineNumbers: true,
-// 		readOnly: true
-// 	});
-// 	setTimeout(()=>{window.scrollTo(0,0);},100);
 	</script>
 
 </body>
 </html> 
-
-<!-- <script src="../codemirror/lib/codemirror.js"></script>
-<link rel="stylesheet" href="../codemirror/lib/codemirror.css">
-<script src="../codemirror/mode/javascript/javascript.js"></script> -->
