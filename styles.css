@@ -87,7 +87,7 @@ header a:hover {
 }
 .section ul {
 	width: 100%;
-	max-width: 1100px;
+	max-width: 1000px;
 	margin: 40px auto 0;
 	display: flex;
 	flex-wrap: wrap;
@@ -108,18 +108,18 @@ header a:hover {
 	overflow: hidden;
 }
 
-@media(min-width: 1000px) {
+@media(min-width: 900px) {
 	.section li {
 		flex-basis: 24%
 	}
 }
-@media(max-width: 800px) {
+@media(max-width: 725px) {
 	.section li {
 		flex-basis: 40%
 	}
 }
 
-@media(max-width: 600px) {
+@media(max-width: 550px) {
 	.section li {
 		flex-basis: 51%
 	}
